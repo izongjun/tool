@@ -1,0 +1,13 @@
+#!/usr/bin/expect 
+set timeout -1
+
+set cmd [lrange $argv 1 end]
+set passwd [lindex $argv 0]
+
+eval spawn $cmd
+expect {
+	"(yes/no)?" { send "yes\r" }
+	"assword:" 	{ send "$passwd\r" }
+}
+wait $!
+interact
