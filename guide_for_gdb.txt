@@ -1,0 +1,30 @@
+1、新建调试目录，或nfs上对应的项目目录。（例：~/nfs/CLUSTER/）
+
+2、获取core dump
+		在目标机器上的对应位置查找Core dump文件拷贝到调试目录。
+		Tips：Core dump文件以XXX_core.gz结尾（例：HMI.core.gz），在固定目录下生成，GAC上位于\fs\mmc2\appData\core目录。
+			  解压
+
+3、获取调试环境
+		拷贝运行的程序环境到调试目录下，如果已经是项目目录则跳过此步
+
+4、获取gdb程序
+		在编译环境（BuildChain）中查找对应的gdb程序并且拷贝到调试目录。
+		Tips：GAC位于 XXX\host\win32\x86\usr\bin 下
+			  BJEV位于 XXX/host/linux/x86_64/usr/bin 下
+			  程序名称为：ntoarm-gdb.exe	 (GAC)
+						 ntox86_64-gdb		(BJEV)
+
+5、配置GDB
+		在调试目录下新建.gdbinit文件，windows上需要命令行执行。
+		添加solib-search-path：
+			set solib-search-path PATH1:PATH2:PATH3...
+		需要添加至少两个路径：
+							I、BuildChain中link的对应版本库路径。（ GAC中为 XXX\qnx_IMX6Dual_GAC_A30\target\qnx6\armle-v7\usr\lib ）
+							II、程序执行加载的库路径，即当前目录。
+
+6、执行调试命令
+		Windows上：ntoarm-gdb.exe HMI HMI.core
+		Linux上：ntox86_64-gdb HMI HMI.core
+
+7、运行结束后输入bt查看回调栈信息
